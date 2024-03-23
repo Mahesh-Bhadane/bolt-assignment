@@ -3,8 +3,8 @@ import { Button } from "../ui/button";
 
 interface ConfirmationDialogProps {
   isOpen: boolean;
-  onConfirm: () => Promise<void>;
-  onCancel: () => void;
+  onConfirm: (e: React.MouseEvent) => Promise<void>;
+  onCancel: (e: React.MouseEvent) => void;
   title: string;
   message: string;
 }
@@ -18,10 +18,10 @@ const ConfirmationDialog = ({
 }: ConfirmationDialogProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (e: React.MouseEvent) => {
     try {
       setIsDeleting(true);
-      await onConfirm();
+      await onConfirm(e);
     } catch (error) {
       console.error("Error during confirmation:", error);
     } finally {
@@ -44,7 +44,7 @@ const ConfirmationDialog = ({
             variant="destructive"
             disabled={isDeleting}
           >
-            {isDeleting ? "Deleting..." : "Confirm"}{" "}
+            {isDeleting ? "Deleting..." : "Confirm"}
           </Button>
         </div>
       </div>

@@ -4,10 +4,11 @@ import React, { useEffect, useState } from "react";
 import UserCard from "./UserCard";
 import { Button } from "../ui/button";
 import { useInView } from "react-intersection-observer";
-import { fetchUsers } from "./actions";
+import { fetchUsers } from "../../services/actions";
 import UserDialog from "./UserDialog";
 import { deleteUser } from "@/services";
 import Spinner from "../ui/spinner";
+import { useRouter } from "next/navigation";
 
 interface UserListProps {
   initialUsers: User[];
@@ -20,6 +21,7 @@ const UserList = ({ initialUsers }: UserListProps) => {
   const [ref, inView] = useInView();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const router = useRouter();
 
   const loadMoreUsers = async () => {
     const next = page + 1;
@@ -71,18 +73,24 @@ const UserList = ({ initialUsers }: UserListProps) => {
 
   return (
     <>
-      <div className=" container mx-auto py-4 flex flex-col items-center">
+      <div className="container mx-auto py-4 flex flex-col items-center">
         <Button onClick={() => openDialog()}>Add New User</Button>
       </div>
       <div className="container mx-auto py-2">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {users?.map((user) => (
-            <UserCard
+            <div
+              onClick={() => router.push(`/users/${user.id}`)}
+              className="cursor-pointer hover:shadow-lg"
               key={user.id}
-              user={user}
-              onUserDeleted={handleUserDeleted}
-              onEditClick={() => openDialog(user)}
-            />
+            >
+              <UserCard
+                key={user.id}
+                user={user}
+                userDeleted={handleUserDeleted}
+                editClick={() => openDialog(user)}
+              />
+            </div>
           ))}
         </div>
         {/* loading spinner */}

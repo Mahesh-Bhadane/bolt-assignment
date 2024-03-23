@@ -1,5 +1,5 @@
-import UserList from "@/components/users/UserList";
-import { fetchUsers } from "@/components/users/actions";
+import UserList from "@/components/molecules/UserList";
+import { fetchUsers } from "@/services/actions";
 
 const Page = async ({
   searchParams,
@@ -10,7 +10,6 @@ const Page = async ({
     typeof searchParams.page === "string" ? Number(searchParams.page) : 1;
 
   const users = await fetchUsers(page);
-
   return <UserList initialUsers={users} />;
 };
 

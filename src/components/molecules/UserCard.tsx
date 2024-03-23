@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import UserImage from "./UserImage";
@@ -6,33 +8,36 @@ import ConfirmationDialog from "./ConfirmationDialog";
 
 interface UserProps {
   user: User;
-  onUserDeleted: (userId: number) => void;
-  onEditClick?: (user: User) => void;
+  userDeleted?: (userId: number) => void;
+  editClick?: (user: User) => void;
 }
 
-const UserCard = ({ user, onUserDeleted, onEditClick }: UserProps) => {
+const UserCard = ({ user, userDeleted, editClick }: UserProps) => {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
   const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     setIsConfirmationOpen(true);
   };
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = async (e: React.MouseEvent) => {
     try {
+      e.stopPropagation();
       await deleteUser(user.id);
-      onUserDeleted(user.id);
+      userDeleted?.(user.id);
       setIsConfirmationOpen(false);
     } catch (error) {
       console.error("Error deleting user:", error);
     }
   };
 
-  const handleCancelDelete = () => {
+  const handleCancelDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setIsConfirmationOpen(false);
   };
 
   return (
-    <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <div className="flex flex-col items-center pb-10">
         <UserImage
           src={user.avatar ?? "https://github.com/shadcn.png"}
@@ -48,7 +53,13 @@ const UserCard = ({ user, onUserDeleted, onEditClick }: UserProps) => {
             `${user?.name?.replace(/\s/g, "").toLowerCase()}@example.com`}
         </span>
         <div className="flex mt-4 md:mt-6 gap-4">
-          <Button variant={"primary"} onClick={() => onEditClick?.(user)}>
+          <Button
+            variant={"primary"}
+            onClick={(e) => {
+              e.stopPropagation();
+              editClick?.(user);
+            }}
+          >
             Edit
           </Button>
           <Button variant={"destructiveOutline"} onClick={handleDelete}>

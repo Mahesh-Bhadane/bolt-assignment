@@ -1,17 +1,34 @@
 "use server";
 
-const API_BASE_URL = "https://reqres.in/api";
+ const API_BASE_URL = "https://reqres.in/api";
 
-export const getUsers = async (
-  page: number,
-  perPage: number
-): Promise<User[]> => {
-  const response = await fetch(
-    `${API_BASE_URL}/users?page=${page}&per_page=${perPage}`
-  );
-  const data = await response.json();
-  return data.data;
-};
+ export const getUsers = async (
+   page: number,
+   perPage: number
+ ): Promise<User[]> => {
+   const response = await fetch(
+     `${API_BASE_URL}/users?page=${page}&per_page=${perPage}`
+   );
+   const data = await response.json();
+   return data.data;
+ };
+
+ export const getUser = async (id: string): Promise<User | null> => {
+   try {
+     const response = await fetch(`${API_BASE_URL}/users/${id}`);
+     const data = await response.json();
+     if (response.ok) {
+       return data.data;
+     } else {
+       console.error(`Error fetching user with id ${id}: ${response.status}`);
+       return null;
+     }
+   } catch (error) {
+     console.error("Error fetching user:", error);
+     return null;
+   }
+ };
+ 
 
 export const createUser = async (name: string, job: string): Promise<User> => {
   const response = await fetch(`${API_BASE_URL}/users`, {

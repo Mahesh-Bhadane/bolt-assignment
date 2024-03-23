@@ -3,16 +3,20 @@ import "./globals.css";
 
 interface RootLayoutProps {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }
 
-const RootLayout = ({ children }: RootLayoutProps) => {
+const RootLayout = ({ children, modal }: RootLayoutProps) => {
   return (
-    <html>
+    <html lang="en">
       <head>
         <title>User Management App</title>
       </head>
 
-      <body>{children}</body>
+      <body>
+        {children}
+        {modal}
+      </body>
     </html>
   );
 };
